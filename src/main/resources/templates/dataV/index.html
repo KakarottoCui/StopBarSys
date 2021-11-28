@@ -1,0 +1,1171 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>可视化-数据中心</title>
+    <meta name="renderer" content="webkit|ie-comp|ie-stand">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8" />
+    <meta http-equiv="Cache-Control" content="no-siteapp" />
+
+    <link rel="stylesheet" th:href="@{/lib/dataV/css/index.css}">
+    <link rel="stylesheet" th:href="@{/lib/dataV/css/reset.css}">
+    <style>
+        [v-cloak] {
+			     display: none;
+		 }
+        .border-box-content {
+          color: rgb(66,185,131);
+          font-size: 40px;
+          font-weight: bold;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+  </style>
+</head>
+<body>
+<div id="particles-js" class="main" v-cloak>
+    <div class="main_con">
+        <div class="main_top">
+            <!--顶部左侧-->
+            <div class="main_top_left">
+
+            </div>
+            <!--顶部中间-->
+            <div class="main_top_middle">
+                <div class="main_top_middle_top_title">
+                    <img class="title_bg" th:src="@{/lib/dataV/images/title_bg.png}"/>
+                    智能停车场监控平台
+                    <a class="title_web" href="" target="blank">停车</a>
+                    <a class="title_admin" href="" target="blank">智能</a>
+                </div>
+            </div>
+            <!--顶部右侧-->
+            <div class="main_top_left main_top_right">
+                <div  style="margin: -5px 5px;width:239px;float:right;color:#fff;text-align:center;">
+                    <div style="font-size:16px;font-weight:bold;">{{date}}</div>
+                    <div style="font-size:24px;font-weight:bold;">{{time}}</div>
+                </div>
+            </div>
+        </div>
+        <!--中间流程任务数量统计-->
+        <div class="main_middle">
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title1">合作单位</div>
+                <span class="main_list_title_num main_list_title_num1"></span>
+            </div>
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title2">停车场数量</div>
+                <span class="main_list_title_num main_list_title_num2"></span>
+            </div>
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title3">包月车辆</div>
+                <span class="main_list_title_num main_list_title_num3"></span>
+            </div>
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title4">VIP车辆</div>
+                <span class="main_list_title_num main_list_title_num4"></span>
+            </div>
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title5">订单数量</div>
+                <span class="main_list_title_num main_list_title_num5"></span>
+            </div>
+            <div class="main_middle_list">
+                <img th:src="@{/lib/dataV/images/main_middle.png}"/>
+                <div class="main_list_title main_list_title6">总收益</div>
+                <span class="main_list_title_num main_list_title_num6"></span>
+            </div>
+        </div>
+        <!--TOP10待办任务/部门流程占比/待办任务-->
+        <div class="main_bottom">
+            <div class="main_bottom_top" style="height:46%">
+                <div class="main_bottom_top_list">
+                    <dv-border-box-12>
+                        <div id="topToDoTaskId" class="main_bottom_t_l_chart"></div>
+                    </dv-border-box-12>
+                </div>
+                <div class="main_bottom_top_list">
+                    <dv-border-box-12>
+                        <div id="departmentId" class="main_bottom_t_l_chart"></div>
+                    </dv-border-box-12>
+                </div>
+                <div class="main_bottom_top_list">
+                    <dv-border-box-12>
+                        <div style="font-size: 18px;
+                                    fontFamily:'sans-serif';
+                                    color: #fff;
+                                    position: absolute;
+                                    top: 15px;
+                                    font-weight: normal;">TOP10 发起流程</div>
+                        <div style="display: block;
+                                    position: absolute;
+                                    top: 40px;">
+                            <dv-scroll-ranking-board :config="config" style="width:500px;height:180px" />
+                        </div>
+                    </dv-border-box-12>
+                </div>
+            </div>
+            <!--底部待定-->
+            <div class="main_bottom_bottom">
+                <!--发起流程月度统计-->
+                <div class="main_bottom_top_list" style="width: 49%">
+                    <dv-border-box-11 title="车辆进出月度趋势">
+                        <div id="monthId" class="main_bottom_b_con"></div>
+                    </dv-border-box-11>
+                </div>
+                <div class="main_bottom_top_list" style="width: 49%">
+                    <dv-border-box-11 title="最近一周车辆进出趋势">
+                        <div id="dayPvId" class="main_bottom_b_con"></div>
+                    </dv-border-box-11>
+                </div>
+            </div>
+            <!--底部待定-->
+            <div class="main_bottom_bottom" style="height:40%">
+                <div class="main_bottom_top_list">
+                    <dv-border-box-13>
+                        <div id="processTimeId" class="main_bottom_t_l_chart"></div>
+                    </dv-border-box-13>
+                </div>
+                <div class="main_bottom_top_list">
+                    <dv-border-box-13>
+                        <div id="taskMonthId" class="main_bottom_t_l_chart"></div>
+                    </dv-border-box-13>
+                </div>
+                <div class="main_bottom_top_list">
+                    <dv-border-box-13>
+                        <div id="taskTimeId" class="main_bottom_t_l_chart"></div>
+                    </dv-border-box-13>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+
+</html>
+<script type="text/javascript" th:src="@{/lib/dataV/js/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/lib/echarts/echarts.min.js}"></script>
+
+<script type="text/javascript" th:src="@{/lib/dataV/js/particles.min.js}"></script>
+<script type="text/javascript" th:src="@{/lib/dataV/js/app.js}"></script>
+<script type="text/javascript" th:src="@{/lib/dataV/js/common.js}"></script>
+
+<script type="text/javascript" th:src="@{/lib/vue/vue.min.js}"></script>
+<script type="text/javascript" th:src="@{/lib/dataV/js/datav.min.vue.js}"></script>
+
+<script>
+    var searchUrl = "";
+    var app = new Vue({
+      el: '#particles-js',
+      data: function(){
+         return {
+             config: {
+                 rowNum:5,
+                 data: []
+             },
+             date: '',
+             time: '',
+             week: ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'],
+         }
+	  },
+	  methods : {
+            top10Process: function() {
+                 var that = this;
+                 $.ajax({
+                    url:"/sys/interface/query",
+                    type: "POST",
+                    data : {'type':'Top10Process'},
+                    success: function (result) {
+                        if(result.code==0){
+                            that.config.data = result.msg;
+                            /**
+                              * 使用ES6拓展运算符生成新的props对象
+                              * 组件侦知数据变化 自动刷新状态
+                            */
+                            that.config = { ...that.config }
+                        }
+                    }
+                });
+            },
+            updateTime: function () {
+                var cd = new Date();
+                this.time = zeroPadding(cd.getHours(), 2) + ':' + zeroPadding(cd.getMinutes(), 2) + ':' +
+                    zeroPadding(cd.getSeconds(), 2);
+                this.date = zeroPadding(cd.getFullYear(), 4) + '-' + zeroPadding(cd.getMonth() + 1, 2) + '-' +
+                    zeroPadding(cd.getDate(), 2) + ' ' + this.week[cd.getDay()];
+            }
+	  },
+	  mounted: function() {
+           this.top10Process();
+           this.updateTime();
+           setInterval(this.updateTime, 1000);
+	  }
+    })
+    $(function() {
+        function apiFn() {
+            this.hostname = ""
+        }
+        apiFn.prototype = {
+            Init:function() {
+                this.statisticsNumFn();
+                this.departmentFn();
+                this.topToDoTaskFn();
+                this.monthFn();
+                this.dayPvFn();
+                this.processTimeFn();
+                this.taskTimeFn();
+                this.taskMonthFn();
+            },
+            statisticsNumFn:function(){
+                $.ajax({
+                    url:"/sys/interface/query",
+                    type: "POST",
+                    data : {'type':'bigScreenNum'},
+                    success: function (result) {
+                        if(result.code==0){
+                           var array = result.msg;
+                           console.log(array[0])
+                           var orgNum = array[0].orgNum;
+                           var parkNum = array[0].parkNum;
+                           var carMNum = array[0].carMNum;
+                           var carVipNum = array[0].carVipNum;
+                           var orderNum = array[0].orderNum
+                           var totalFee = array[0].totalFee
+                           var dataArr = [
+                                {name: '合作单位', value: orgNum},
+                                {name: '停车场数量', value: parkNum},
+                                {name: '包月车数量', value: carMNum},
+                                {name: 'VIP车数量', value: carVipNum},
+                                {name: '订单总数', value: orderNum},
+                                {name: '总收益', value: totalFee},
+                           ]
+                           for(var j = 0; j < dataArr.length; j++) {
+                                $(".main_list_title_num"+(j+1)).addClass("counter-value").text(dataArr[j].value)
+                                $(".main_list_title"+(j+1)).text(dataArr[j].name)
+                           }
+                        }
+                    }
+                });
+            },
+            // 流程分类数量占比
+            departmentFn:function() {
+                 $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'processTypeCreate','token':'cf74a4298251b0163621bc4fe100f66e'},
+                    success: function (result) {
+                        if(result.code==0){
+                            var departmentChart = echarts.init(document.getElementById('departmentId'));
+                            var data = result.msg
+                            var option = {
+                                title: {
+                                    text: '流程分类发起占比',
+                                    x:'center',
+                                    textStyle:{
+                                        color:'#ffffff',
+                                        //字体风格,'normal','italic','oblique'
+                                        fontStyle:'normal',
+                                        //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                                        fontWeight:'normal',
+                                        //字体系列
+                                        fontFamily:'sans-serif',
+                                        //字体大小
+                                　　　　 fontSize:18
+                                    }
+                                },
+                                color: ['#3493FF','#2E8B57','#40E0D0','#FFA500','#FD9133', '#47F6A2', '#37D2D4'],
+                                tooltip : {
+                                    trigger: 'item',
+                                    formatter: "{a} <br/>{b} : {c} ({d}%)"
+                                },
+                                legend: {
+                                    itemWidth: 18,// 左侧标志图形的长度
+                                    itemHeight: 10,// 标志图形的宽度
+                                    orient: 'vertical',
+                                    // left: 'right',
+                                    top: '30%',
+                                    bottom: '50%',
+                                    x: '5%',
+                                    textStyle: {
+                                        color: '#fff',
+                                        fontSize: 12,//左侧字体大小
+                                    },
+                                    data: data,
+                                },
+                                grid: {
+                                    left: '5%',
+                                    right: '8%',
+                                    top: '20%',
+                                    bottom: '20%'
+                                },
+                                series: [
+                                    {
+                                        name: '流程分类发起占比',
+                                        type: 'pie',
+                                        radius: ['50%', '70%'],
+                                        center: ['78%', '52%'],
+                                        labelLine: {
+                                            normal: {
+                                                length: 12,
+                                                lineStyle: {
+                                                    type: 'solid',
+                                                    color: '#0EFCFF'
+                                                }
+                                            }
+
+                                        },
+                                        label: {
+                                            normal: {
+                                                formatter: (params)=>{
+                                                    return params.name
+                                                },
+                                                borderWidth: 0,
+                                                borderRadius: 4,
+                                                padding: [0,0],
+                                                height: 20,
+                                                fontSize: 12,
+                                                align: 'center',
+                                                color: '#0EFCFF',
+                                            }
+                                        },
+                                        data: data
+                                    },
+                                    {
+                                        color: '#0EFCFF',
+                                        type: 'pie',
+                                        radius: ['55', '56'],
+                                        center: ['78%', '52%'],
+                                        data: [100],
+                                        label: {
+                                            show: false
+                                        }
+                                    },
+                                    {
+                                        type: 'pie',
+                                        radius: ['25', '26'],
+                                        center: ['78%', '52%'],
+                                        data: [100],
+                                        label: {
+                                            show: false
+                                        }
+                                    }
+                                ]
+                            };
+                            departmentChart.setOption(option)
+                            setInterval(function() {
+                                departmentChart.clear()
+                                departmentChart.setOption(option)
+                            },600000)
+                        }
+                    }
+                });
+            },
+            //待办任务
+            topToDoTaskFn:function() {
+                var taskList = []
+                var xunArr = []
+                $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'Top10Task','token':'fd02c8f3b53fcbc836a12f7609021b72'},
+                    success: function (result) {
+                        if(result.code==0){
+                            xunArr = result.msg;
+                            xunArr.forEach(function(element) {
+                               element.name = element.processName+"-"+element.taskName;
+                               taskList.push(element.taskName);
+                               element.value = element.number;
+                            });
+                            var chartDom = document.getElementById('topToDoTaskId');
+                            var myChart = echarts.init(chartDom);
+                            var option = {
+                                title: {
+                                    text: 'TOP10 待办任务',
+                                    x:'center',
+                                    textStyle:{
+                                        color:'#ffffff',
+                                        //字体风格,'normal','italic','oblique'
+                                        fontStyle:'normal',
+                                        //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                                        fontWeight:'normal',
+                                        //字体系列
+                                        fontFamily:'sans-serif',
+                                        //字体大小
+                                　　　　 fontSize:18
+                                    }
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    x: '35%',
+                                    y: '0%',
+                                    textStyle: {
+                                        color: "#fff",
+                                        fontSize: 8
+                                    },
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: taskList,
+                                        axisLabel: {
+                                            interval: 0,
+                                            rotate:20,//x轴倾斜
+                                            textStyle: {
+                                                fontSize: 12,
+                                                color: 'rgba(255,255,255,.7)',
+                                            }
+                                        },
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '单位：个',
+                                        nameTextStyle: {
+                                            color: 'rgba(255,255,255,.7)',
+                                            fontSize: 12
+                                        },
+                                        //max: 1000,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2],
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                        axisLabel: {
+                                            textStyle: {
+                                                color: 'rgba(255,255,255,.8)',
+                                                fontSize: 12
+                                                // opacity: 0.1,
+                                            }
+                                        },
+                                        splitLine: {  //决定是否显示坐标中网格
+                                            show: true,
+                                            lineStyle: {
+                                                color: ['#fff'],
+                                                opacity: 0.2
+                                            }
+                                        },
+                                    }
+                                ],
+                                color: ['#38EB70'],
+                                grid: {
+                                    left: '10%',
+                                    right: '1%',
+                                    top: '20%',
+                                    bottom: '20%'
+                                },
+                                series: [
+                                    {
+                                        animationDuration: 2500,
+                                        barWidth: '30%',
+                                        type: 'bar',
+                                        data: xunArr,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true, //开启显示
+                                                    position: 'top', //在上方显示
+                                                    textStyle: { //数值样式
+                                                        fontSize: 16
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                ],
+                            };
+                            myChart.setOption(option)
+                            setInterval(function() {
+                                myChart.clear()
+                                myChart.setOption(option)
+                            },600000)
+                        }
+                    }
+                });
+            },
+            // 月度流程发起趋势
+            monthFn:function() {
+                 var chartDom = document.getElementById('monthId');
+                 var myChart = echarts.init(chartDom);
+                 var flowData = []
+                 var numData = []
+                 $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'processCreateMonth','token':'d6524c32c86a37d6b3da4a4005ae3390'},
+                    success: function (result) {
+                        if(result.code==0){
+                            var array = result.msg;
+                            array.forEach(function(element){
+                                var month = element.month+"";
+                                if(month.length == 1){
+                                    month = "0"+month;
+                                }
+                                flowData.push(element.year+"-"+month);
+                                numData.push(element.sum);
+                            })
+                            var option = {
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    x: '35%',
+                                    y: '0%',
+                                    textStyle: {
+                                        color: "#fff",
+                                        fontSize: 8
+                                    },
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: flowData,
+                                        axisLabel: {
+                                            interval: 0,
+                                            textStyle: {
+                                                fontSize: 12,
+                                                color: 'rgba(255,255,255,.7)',
+                                            }
+                                        },
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '单位：个',
+                                        nameTextStyle: {
+                                            color: 'rgba(255,255,255,.7)',
+                                            fontSize: 12
+                                        },
+                                        //max: 1000,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2],
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                        axisLabel: {
+                                            textStyle: {
+                                                color: 'rgba(255,255,255,.8)',
+                                                fontSize: 12
+                                                // opacity: 0.1,
+                                            }
+                                        },
+                                        splitLine: {  //决定是否显示坐标中网格
+                                            show: true,
+                                            lineStyle: {
+                                                color: ['#fff'],
+                                                opacity: 0.2
+                                            }
+                                        },
+                                    }
+                                ],
+                                color: ['#FFA500'],
+                                grid: {
+                                    left: '5%',
+                                    right: '1%',
+                                    top: '20%',
+                                    bottom: '25%'
+                                },
+                                series: [
+                                    {
+                                        animationDuration: 2500,
+                                        barWidth: '30%',
+                                        type: 'line',
+                                        data: numData,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true, //开启显示
+                                                    position: 'top', //在上方显示
+                                                    textStyle: { //数值样式
+
+                                                        fontSize: 16
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                ],
+                            };
+                            myChart.setOption(option)
+                            setInterval(function() {
+                                myChart.clear()
+                                myChart.setOption(option)
+                            },600000)
+                        }
+                    }
+                });
+            },
+            // 日访问 PV 统计
+            dayPvFn:function() {
+                var chartDom = document.getElementById('dayPvId');
+                var myChart = echarts.init(chartDom);
+                var flowData = []
+                var numData = []
+                $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'logDayPv','token':'21a1a2881e02445b33f2158cda4c5318'},
+                    success: function (result) {
+                            var array = result.msg;
+                            array.forEach(function(element){
+                                flowData.push(element.name);
+                                numData.push(element.value);
+                            })
+                            var option = {
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    x: '35%',
+                                    y: '0%',
+                                    textStyle: {
+                                        color: "#fff",
+                                        fontSize: 8
+                                    },
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: flowData,
+                                        axisLabel: {
+                                            interval: 0,
+                                            rotate: 20,
+                                            textStyle: {
+                                                fontSize: 12,
+                                                color: 'rgba(255,255,255,.7)',
+                                            }
+                                        },
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '单位：PV',
+                                        nameTextStyle: {
+                                            color: 'rgba(255,255,255,.7)',
+                                            fontSize: 12
+                                        },
+                                        //max: 1000,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2],
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                        axisLabel: {
+                                            textStyle: {
+                                                color: 'rgba(255,255,255,.8)',
+                                                fontSize: 12
+                                                // opacity: 0.1,
+                                            }
+                                        },
+                                        splitLine: {  //决定是否显示坐标中网格
+                                            show: true,
+                                            lineStyle: {
+                                                color: ['#fff'],
+                                                opacity: 0.2
+                                            }
+                                        },
+                                    }
+                                ],
+                                color: ['#38EB70'],
+                                grid: {
+                                    left: '5%',
+                                    right: '1%',
+                                    top: '20%',
+                                    bottom: '30%'
+                                },
+                                series: [
+                                    {
+                                        animationDuration: 2500,
+                                        barWidth: '30%',
+                                        type: 'line',
+                                        data: numData,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true, //开启显示
+                                                    position: 'top', //在上方显示
+                                                    textStyle: { //数值样式
+
+                                                        fontSize: 16
+                                                    }
+                                                }
+                                            }
+                                        },
+                                    },
+                                ],
+                            };
+                            myChart.setOption(option)
+                            setInterval(function() {
+                                myChart.clear()
+                                myChart.setOption(option)
+                            },600000)
+                    }
+                });
+            },
+            //TOP10耗时流程
+            processTimeFn:function() {
+                var chartDom = document.getElementById('processTimeId');
+                var myChart = echarts.init(chartDom);
+                var taskList = []
+                var xunArr = []
+                $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'Top10TimeProcess','token':'dbb15d0d53165532867b73cbbbbcf1c8'},
+                    success: function (result) {
+                        if(result.code==0){
+                            var array = result.msg;
+                            array.forEach(function(element){
+                                taskList.push(element.name);
+                                xunArr.push(accDiv(parseInt(element.value),1000*60*60*24,2));
+                            })
+                            var option = {
+                                title: {
+                                    text: 'TOP10 耗时流程',
+                                    x:'center',
+                                    textStyle:{
+                                        color:'#ffffff',
+                                        //字体风格,'normal','italic','oblique'
+                                        fontStyle:'normal',
+                                        //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                                        fontWeight:'normal',
+                                        //字体系列
+                                        fontFamily:'sans-serif',
+                                        //字体大小
+                                　　　　 fontSize:18
+                                    }
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    x: '35%',
+                                    y: '0%',
+                                    textStyle: {
+                                        color: "#fff",
+                                        fontSize: 8
+                                    },
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: taskList,
+                                        axisLabel: {
+                                            interval: 0,
+                                            rotate:15,//x轴倾斜
+                                            textStyle: {
+                                                fontSize: 12,
+                                                color: 'rgba(255,255,255,.7)',
+                                            }
+                                        },
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '单位：天',
+                                        nameTextStyle: {
+                                            color: 'rgba(255,255,255,.7)',
+                                            fontSize: 12
+                                        },
+                                        //max: 1000,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2],
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                        axisLabel: {
+                                            textStyle: {
+                                                color: 'rgba(255,255,255,.8)',
+                                                fontSize: 12
+                                                // opacity: 0.1,
+                                            }
+                                        },
+                                        splitLine: {  //决定是否显示坐标中网格
+                                            show: true,
+                                            lineStyle: {
+                                                color: ['#fff'],
+                                                opacity: 0.2
+                                            }
+                                        },
+                                    }
+                                ],
+                                color: ['#38EB70'],
+                                grid: {
+                                    left: '10%',
+                                    right: '1%',
+                                    top: '30%',
+                                    bottom: '30%'
+                                },
+                                series: [
+                                    {
+                                        animationDuration: 2500,
+                                        barWidth: '30%',
+                                        type: 'bar',
+                                        data: xunArr,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true, //开启显示
+                                                    position: 'top', //在上方显示
+                                                    textStyle: { //数值样式
+                                                        fontSize: 16
+                                                    }
+                                                },
+                                                color: function(params) {
+                                                    var colorList = [
+                                                          '#C1232B','#B5C334','#FCCE10','#E87C25','#27727B',
+                                                           '#FE8463','#9BCA63','#FAD860','#F3A43B','#60C0DD',
+                                                           '#D7504B','#C6E579','#F4E001','#F0805A','#26C0C0'
+                                                    ];
+                                                    return colorList[params.dataIndex]
+                                                }
+                                            }
+                                        },
+                                    },
+                                ],
+                            };
+                            myChart.setOption(option)
+                            setInterval(function() {
+                                myChart.clear()
+                                myChart.setOption(option)
+                            },600000)
+                        }
+                    }
+                });
+            },
+             //TOP10耗时任务
+            taskTimeFn:function() {
+                var chartDom = document.getElementById('taskTimeId');
+                var myChart = echarts.init(chartDom);
+                var taskList = []
+                var xunArr = []
+                 $.ajax({
+                    url:searchUrl,
+                    type: "POST",
+                    data : {'type':'Top10TimeTask','token':'193994cf5cec77ce7209cd923038fb0c'},
+                    success: function (result) {
+                        if(result.code==0){
+                            var array = result.msg;
+                            array.forEach(function(element){
+                                //taskList.push(element.processName+"-"+element.name);
+                                taskList.push(element.name);
+                                xunArr.push(accDiv(parseInt(element.time),1000*60*60*24,2));
+                            })
+                            var option = {
+                                title: {
+                                    text: 'TOP10 耗时任务',
+                                    x:'center',
+                                    textStyle:{
+                                        color:'#ffffff',
+                                        //字体风格,'normal','italic','oblique'
+                                        fontStyle:'normal',
+                                        //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                                        fontWeight:'normal',
+                                        //字体系列
+                                        fontFamily:'sans-serif',
+                                        //字体大小
+                                　　　　 fontSize:18
+                                    }
+                                },
+                                tooltip: {
+                                    trigger: 'axis'
+                                },
+                                legend: {
+                                    x: '35%',
+                                    y: '0%',
+                                    textStyle: {
+                                        color: "#fff",
+                                        fontSize: 8
+                                    },
+                                    itemWidth: 10,
+                                    itemHeight: 10,
+                                },
+                                calculable: true,
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        data: taskList,
+                                        axisLabel: {
+                                            interval: 0,
+                                            rotate:15,//x轴倾斜
+                                            textStyle: {
+                                                fontSize: 12,
+                                                color: 'rgba(255,255,255,.7)',
+                                            }
+                                        },
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        scale: true,
+                                        name: '单位：天',
+                                        nameTextStyle: {
+                                            color: 'rgba(255,255,255,.7)',
+                                            fontSize: 12
+                                        },
+                                        //max: 1000,
+                                        min: 0,
+                                        boundaryGap: [0.2, 0.2],
+                                        "axisTick": {       //y轴刻度线
+                                            "show": false
+                                        },
+                                        "axisLine": {       //y轴
+                                            "show": false,
+                                        },
+                                        axisLabel: {
+                                            textStyle: {
+                                                color: 'rgba(255,255,255,.8)',
+                                                fontSize: 12
+                                                // opacity: 0.1,
+                                            }
+                                        },
+                                        splitLine: {  //决定是否显示坐标中网格
+                                            show: true,
+                                            lineStyle: {
+                                                color: ['#fff'],
+                                                opacity: 0.2
+                                            }
+                                        },
+                                    }
+                                ],
+                                color: ['#38EB70'],
+                                grid: {
+                                    left: '10%',
+                                    right: '1%',
+                                    top: '20%',
+                                    bottom: '30%'
+                                },
+                                series: [
+                                    {
+                                        animationDuration: 2500,
+                                        barWidth: '30%',
+                                        type: 'bar',
+                                        data: xunArr,
+                                        itemStyle: {
+                                            normal: {
+                                                label: {
+                                                    show: true, //开启显示
+                                                    position: 'top', //在上方显示
+                                                    textStyle: { //数值样式
+                                                        fontSize: 16
+                                                    }
+                                                },
+                                                color: function(params) {
+                                                    var colorList =  ['#00FFFF','#D2691E', '#006400',
+                                                                        '#00BFFF','#008000', '#00FF00',
+                                                                        '#FFA500','#2E8B57', '#9ACD32','#c23531'];
+                                                    return colorList[params.dataIndex]
+                                                }
+                                            }
+                                        },
+                                    },
+                                ],
+                            };
+                            myChart.setOption(option)
+                            setInterval(function() {
+                                myChart.clear()
+                                myChart.setOption(option)
+                            },600000)
+                        }
+                    }
+                });
+            },
+            //订单收益月度趋势
+            taskMonthFn:function(){
+                var chartDom = document.getElementById('taskMonthId');
+                var myChart = echarts.init(chartDom);
+                var flowData = []
+                var numData = []
+                 var option = {
+                    title: {
+                        text: '订单收益月度趋势',
+                        x:'center',
+                        textStyle:{
+                            color:'#ffffff',
+                            //字体风格,'normal','italic','oblique'
+                            fontStyle:'normal',
+                            //字体粗细 'normal','bold','bolder','lighter',100 | 200 | 300 | 400...
+                            fontWeight:'normal',
+                            //字体系列
+                            fontFamily:'sans-serif',
+                            //字体大小
+                    　　　　 fontSize:18
+                        }
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    legend: {
+                        x: '35%',
+                        y: '0%',
+                        textStyle: {
+                            color: "#fff",
+                            fontSize: 8
+                        },
+                        itemWidth: 10,
+                        itemHeight: 10,
+                    },
+                    calculable: true,
+                    xAxis: [
+                        {
+                            type: 'category',
+                            data: flowData,
+                            axisLabel: {
+                                interval: 0,
+                                rotate:20,//x轴倾斜
+                                textStyle: {
+                                    fontSize: 12,
+                                    color: 'rgba(255,255,255,.7)',
+                                }
+                            },
+                            "axisTick": {       //y轴刻度线
+                                "show": false
+                            },
+                            "axisLine": {       //y轴
+                                "show": false,
+                            },
+                        }
+                    ],
+                    yAxis: [
+                        {
+                            type: 'value',
+                            scale: true,
+                            name: '单位：个',
+                            nameTextStyle: {
+                                color: 'rgba(255,255,255,.7)',
+                                fontSize: 12
+                            },
+                            //max: 1000,
+                            min: 0,
+                            boundaryGap: [0.2, 0.2],
+                            "axisTick": {       //y轴刻度线
+                                "show": false
+                            },
+                            "axisLine": {       //y轴
+                                "show": false,
+                            },
+                            axisLabel: {
+                                textStyle: {
+                                    color: 'rgba(255,255,255,.8)',
+                                    fontSize: 12
+                                    // opacity: 0.1,
+                                }
+                            },
+                            splitLine: {  //决定是否显示坐标中网格
+                                show: true,
+                                lineStyle: {
+                                    color: ['#fff'],
+                                    opacity: 0.2
+                                }
+                            },
+                        }
+                    ],
+                    color: ['#9ACD32'],
+                    grid: {
+                        left: '5%',
+                        right: '1%',
+                        top: '20%',
+                        bottom: '25%'
+                    },
+                    series: [
+                        {
+                            animationDuration: 2500,
+                            barWidth: '30%',
+                            type: 'line',
+                            data: numData,
+                            itemStyle: {
+                                normal: {
+                                    label: {
+                                        show: true, //开启显示
+                                        position: 'top', //在上方显示
+                                        textStyle: { //数值样式
+
+                                            fontSize: 16
+                                        }
+                                    }
+                                }
+                            },
+                        },
+                    ],
+                };
+                myChart.setOption(option)
+                setInterval(function() {
+                    myChart.clear()
+                    myChart.setOption(option)
+                },600000)
+            }
+        }
+        var start = new apiFn()
+        start.Init()
+    })
+</script>

@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body class="childrenBody seting-pass">
+	<div id="app">
+		<i-form ref="checkForm" :model="user" :rules="ruleValidate"  :label-width="80">
+			<form-item prop="newPassword" label="密码：">
+				<i-input v-model="user.newPassword" placeholder="请输入密码"></i-input>
+			</form-item>
+		</i-form>
+	</div>
+ <div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el : '#app',
+    data:{
+        user:{
+
+        },
+        ruleValidate : {
+			newPassword: [
+				{ required: true, message: '新密码不能为空', trigger: 'blur' }
+			]
+		}
+    },
+    methods : {
+		acceptClick : function(dialog){
+			  var that = this;
+		      vm.$refs.checkForm.validate(function(valid){
+				if (valid) {
+					var user = {};
+					user.password = that.user.newPassword;
+					user.username = that.user.username;
+					user.userId = that.user.userId;
+					layui.use(["okUtils", "okLayer"], function () {
+						 okUtils = layui.okUtils;
+						 okLayer = layui.okLayer;
+						 okUtils.ajaxCloud({
+							url:"/sys/user/updatePwd",
+							param : user,
+							success : function(result) {
+							     okLayer.msg.greenTick(result.msg, function () {
+									  dialog.load();
+								 })
+							}
+						});
+					});
+				}
+			});
+	    }
+    },
+    created : function() {
+
+    }
+ });
+</script>
+</body>
+</html>

@@ -1,0 +1,78 @@
+ .ivu-table td.table-info-column1{
+        background-color: #effafe;
+        color: #000;
+    }
+    
+.ivu-table td.table-info-column2{
+        background-color: #eaf4ff; 
+        color: #000;
+}
+
+.ivu-table td.table-info-column3{
+        background-color: #ffecec;
+        color: #000;
+}
+.ivu-table td.table-info-column4{
+        background-color: #ffffec;
+        color: #000;
+}
+.ivu-table td.table-info-column5{
+        background-color: #f3ffe8;
+        color: #000;
+}
+
+.ivu-table .table-info-row1 td{
+        background-color: #f7ffff;
+        color: #000;
+}
+.ivu-table .table-info-row2 td{
+        background-color: #eef7ff;
+        color: #000;
+}
+.ivu-table .table-info-row3 td{
+        background-color: #fff2f2;
+        color: #000;
+}
+.ivu-table .table-info-row4 td{
+        background-color: #ffffee;
+        color: #000;
+}
+.ivu-table .table-info-row5 td{
+        background-color: #f0fff0;
+        color: #000;
+}
+.ivu-table .table-info-row6 td{
+        background-color: #fff4ff;
+        color: #000;
+}
+
+.ivu-table .table-info-rowborder5 td{
+		border-bottom:2px solid #000000;
+        /**background-color: #f0fff0;*/
+}
+.ivu-table .table-info-rowborder1 td{
+		border-bottom:2px solid #000000;
+        /**background-color: #f7ffff;*/
+}
+
+.ivu-table td.table-column-topborder {
+		border-top:2px solid  #c7d8f8;
+}
+.ivu-table td.table-column-bottomborder{
+		border-bottom:2px solid  #c7d8f8;
+}
+.ivu-table td.table-column-leftborder{
+		border-left:2px solid  #c7d8f8;
+}
+.ivu-table td.table-column-rightborder{
+		border-right:2px solid #c7d8f8;
+}
+.ivu-table td.table-column-redcolor{
+		color: red;
+}
+.ivu-table .gray-table-info-cell-name {
+        background-color: #F8F8F9!important;
+        color: #fff;
+    }
+    
+ 

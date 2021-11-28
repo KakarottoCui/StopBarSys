@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="role" :rules="ruleValidate" :label-width="100">
+            <form-item prop="roleSign" label="角色代码">
+                <i-input maxlength="20" v-model="role.roleSign" placeholder="请输入角色代码"></i-input>
+            </form-item>
+            <form-item prop="roleName" label="角色名称">
+                <i-input maxlength="20" v-model="role.roleName" placeholder="请输入角色名称"></i-input>
+            </form-item>
+            <form-item prop="remark" label="备注">
+                <i-input maxlength="200" v-model="role.remark"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入备注"></i-input>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        role:{},
+        ruleValidate : {
+			roleSign: [
+				{ required: true, message: '角色代码不能为空', trigger: 'blur' }
+			],
+			roleName: [
+				{ required: true, message: '角色名称不能为空', trigger: 'blur' }
+			]
+		}
+    },
+    methods: {
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                layui.use(["okUtils", "okLayer"], function () {
+                     okUtils = layui.okUtils;
+                     okLayer = layui.okLayer;
+                     okUtils.ajaxCloud({
+                        url:"/sys/role/save",
+                        param : vm.role,
+                        json:true,
+                        success : function(result) {
+                            okLayer.msg.greenTick(result.msg)
+                            dialog.load();
+                        }
+                    });
+                });
+            }
+          });
+	    }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

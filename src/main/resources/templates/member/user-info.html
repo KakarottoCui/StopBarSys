@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form ref="checkForm" :model="user" :rules="ruleValidate" :label-width="100">
+            <form-item label="用户名：">
+                {{user.username}}
+            </form-item>
+            <form-item prop="nickname" label="昵称：">
+                <i-input maxlength="20" v-model="user.nickname" placeholder="请输入昵称"></i-input>
+            </form-item>
+            <form-item prop="email" label="邮箱：">
+                <i-input v-model="user.email" placeholder="请输入邮箱"></i-input>
+            </form-item>
+            <form-item prop="mobile" label="手机：">
+                <i-input type="number" maxlength="11" v-model="user.mobile" placeholder="请输入手机"></i-input>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        user:{
+
+        },
+        ruleValidate : {
+			username: [
+				{ required: true, message: '账号不能为空', trigger: 'blur' }
+			],
+			password: [
+				{ required: true, message: '密码不能为空', trigger: 'blur' }
+			],
+			nickname: [
+				{ required: true, message: '昵称不能为空', trigger: 'blur' }
+			]
+		},
+		okUtils:null,
+		okLayer:null
+    },
+    methods: {
+        load : function(){
+            layui.use(["okUtils", "okLayer"], function () {
+                 vm.okUtils = layui.okUtils;
+                 vm.okLayer = layui.okLayer;
+                 vm.okUtils.ajaxCloud({
+                    url:"/member/info",
+                    close : false,
+                    success : function(result) {
+                        vm.user = result.msg;
+                    }
+                 });
+            });
+	    },
+        acceptClick : function(){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 vm.okUtils.ajaxCloud({
+                    url:"/member/update",
+                    param : vm.user,
+                    json:true,
+                    success : function(result) {
+                         vm.okLayer.msg.greenTick(result.msg)
+                    }
+                 });
+            }
+          });
+	    }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

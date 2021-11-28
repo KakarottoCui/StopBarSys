@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="menu" :rules="ruleValidate" :label-width="100">
+            <form-item prop="name" label="菜单名称">
+                <i-input maxlength="20" v-model="menu.name" placeholder="请输入菜单名称"></i-input>
+            </form-item>
+            <form-item prop="url" label="上级菜单">
+                <span @click="selectMenu()">
+                    <i-input readonly v-model="menu.parentName" placeholder="请选择上级菜单"></i-input>
+                </span>
+            </form-item>
+            <form-item prop="url" label="菜单URL">
+                <i-input maxlength="100" v-model="menu.url" placeholder="请输入菜单URL"></i-input>
+            </form-item>
+            <form-item prop="perms" label="权限">
+                <i-input maxlength="50" v-model="menu.perms" placeholder="请输入权限"></i-input>
+            </form-item>
+            <form-item prop="icon" label="图标">
+                <span @click="selectIcon()">
+                    <i-input v-model="menu.icon" placeholder="请选择图标"></i-input>
+                </span>
+            </form-item>
+            <form-item label="类型">
+                <radio-group  v-model="menu.type">
+                    <radio v-for="item in typeList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+            <form-item prop="orderNum" label="排序">
+                <i-input type="number" v-model="menu.orderNum" placeholder="序号"></i-input>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        menu:{
+            parentId:0,
+            parentName:'一级菜单',
+            type:-1,
+            icon:""
+        },
+        roleName:"",
+        typeList:[{"label":"目录","value":0},{"label":"菜单","value":1},{"label":"按钮","value":2}],
+        ruleValidate : {
+			name: [
+				{ required: true, message: '菜单名称', trigger: 'blur' }
+			]
+		},
+		okUtils:null,
+		okLayer:null
+    },
+    methods: {
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 vm.okUtils.ajaxCloud({
+                    url:"/sys/menu/save",
+                    param : vm.menu,
+                    json:true,
+                    success : function(result) {
+                         vm.okLayer.msg.greenTick(result.msg)
+                         dialog.load(vm.menu.parentId);
+                         dialog.tree();
+                    }
+                 });
+            }
+          });
+	    },
+	    selectIcon:function(){
+	        vm.okUtils.dialogOpen({
+	            id:"selectIcon",
+                title: '图标',
+                url: "sys/menu/icon.html",
+                scroll : true,
+                width: '80%',
+                height: '80%',
+                btn:[],
+                success : function(dialog) {
+                    dialog.menu = vm.menu;
+                }
+            });
+	    },
+	    selectMenu:function(){
+	        vm.okUtils.dialogOpen({
+	            id:"selectIcon",
+                title: '选择',
+                url: "sys/menu/menu.html",
+                scroll : true,
+                width: '300px',
+                height: '500px',
+                success : function(dialog) {
+                    dialog.menu = vm.menu;
+                },
+                yes : function(dialog) {
+                    dialog.vm.acceptClick(vm);
+                }
+            });
+	    }
+    },
+    created: function() {
+        var that = this;
+        layui.use(["okUtils", "okLayer"], function () {
+             that.okUtils = layui.okUtils;
+             that.okLayer = layui.okLayer;
+        });
+    }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div id="app"  v-cloak>
+	<template>
+		<Transfer
+				:data="data"
+				:target-keys="targetKeys"
+				:list-style="listStyle"
+				:render-format="render"
+				:operations="['移除角色','添加角色']"
+				:titles="['待选角色','已选角色']"
+				filterable
+				@on-change="handleChange">
+			<div :style="{float: 'right', margin: '5px'}">
+				<i-button icon="ios-redo" size="small" @click="reloadMockData">重置</i-button>
+			</div>
+		</Transfer>
+	</template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script type="text/javascript">
+var vm = new Vue({
+	el:'#app',
+	data:{
+    	user:{
+    		userId:null,
+    		roleIdList:[]
+    	},
+        data: [],
+        targetKeys: [],
+        listStyle: {
+            width: '43%',
+            height: '420px'
+        },
+        roleList:[]
+    },
+    methods: {
+        getMockData:function () {
+            layui.use(["okUtils"], function () {
+				 okUtils = layui.okUtils;
+				 okLayer = layui.okLayer;
+				 okUtils.ajaxCloud({
+					url:"/sys/role/select",
+					param : vm.user,
+					close : false,
+					success : function(result) {
+						vm.roleList = result.msg;
+						vm.data = [];
+						for (var i = 0; i < vm.roleList.length; i++) {
+							var roleId = vm.roleList[i].roleId;
+							var roleName = vm.roleList[i].roleName;
+							var roleSign = vm.roleList[i].roleSign;
+							vm.data.push({
+								key: roleId.toString(),
+								label: roleSign+"-"+roleName,
+								roleName: roleName,
+								description: '',
+								disabled: false
+							});
+						}
+					}
+				 });
+			});
+        },
+        handleChange:function(newTargetKeys) {
+            this.targetKeys = newTargetKeys;
+        },
+        render:function(item) {
+            return item.label;
+        },
+        reloadMockData:function() {
+            this.getMockData();
+            this.setTargetKeys();
+        },
+        acceptClick: function(dialog) {
+        	dialog.entity.roleIdList = vm.targetKeys;
+        	var chooseRoleName = '';
+        	vm.roleList.forEach(function(element) {
+        		console.log(this.targetKeys)
+				vm.targetKeys.forEach(function(key) {
+					if(element.roleId == key){
+						chooseRoleName+=element.roleName+",";
+					}
+				});
+			});
+			if(chooseRoleName.endsWith(",")){
+				chooseRoleName = chooseRoleName.substring(0,chooseRoleName.length-1);
+			}
+			dialog.roleName = chooseRoleName;
+			okUtils.dialogClose();
+		},
+		setTargetKeys:function(){
+			var roleIdList = this.user.roleIdList;
+			var userRoleId = [];
+			roleIdList.forEach(function(element) {
+				var roleId = element;
+				userRoleId.push(roleId.toString());
+			});
+			this.targetKeys = userRoleId;
+		}
+    },
+    created : function() {
+    	this.getMockData();
+	}
+})
+</script>
+</body>
+</html>

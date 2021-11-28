@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="entity" :rules="ruleValidate" :label-width="100">
+            <form-item prop="username" label="用户名">
+                <i-input  maxlength="20" v-model="entity.username" placeholder="请输入用户名"></i-input>
+            </form-item>
+            <form-item prop="password" label="密码" v-if="entity.userId!=null">
+                <i-input value="******" disabled  placeholder="请输入密码"></i-input>
+            </form-item>
+            <form-item prop="password" label="密码" v-if="entity.userId==null">
+                <i-input maxlength="20" v-model="entity.password"  placeholder="请输入密码"></i-input>
+            </form-item>
+            <form-item prop="nickname" label="昵称">
+                <i-input maxlength="20" v-model="entity.nickname" placeholder="请输入昵称"></i-input>
+            </form-item>
+            <form-item label="机构">
+                <span @click="selectOrg()">
+                    <i-input readonly  v-model="entity.orgName" placeholder="请选择机构"></i-input>
+                </span>
+            </form-item>
+            <form-item prop="email" label="邮箱">
+                <i-input v-model="entity.email" placeholder="请输入邮箱"></i-input>
+            </form-item>
+            <form-item prop="mobile" label="手机">
+                <i-input type="number" maxlength="11" v-model="entity.mobile" placeholder="请输入手机"></i-input>
+            </form-item>
+            <form-item prop="mobile" label="角色">
+                <i-button  @click="selectRole()" icon="ios-search" >选择角色</i-button>
+                <div>{{roleName}}</div>
+            </form-item>
+            <form-item label="状态：">
+                <radio-group  v-model="entity.status">
+                    <radio v-for="item in statusList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        entity:{
+            status:1,
+            orgName:'',
+            orgId:null,
+            userId:null
+        },
+        roleName:"",
+        statusList:[{"label":"正常","value":1},{"label":"禁用","value":0}],
+        ruleValidate : {
+			username: [
+				{ required: true, message: '账号不能为空', trigger: 'blur' }
+			],
+			password: [
+				{ required: true, message: '密码不能为空', trigger: 'blur' }
+			],
+			nickname: [
+				{ required: true, message: '昵称不能为空', trigger: 'blur' }
+			],
+			orgName: [
+				{ required: true, message: '请选择机构', trigger: 'change' }
+			]
+		},
+		okUtils:null,
+		okLayer:null
+    },
+    methods: {
+        load : function(){
+            layui.use(["okUtils", "okLayer"], function () {
+                 vm.okUtils = layui.okUtils;
+                 vm.okLayer = layui.okLayer;
+                 if(vm.entity.userId!=null){
+                     vm.okUtils.ajaxCloud({
+                        url:"/sys/user/get",
+                        param : {userId:vm.entity.userId},
+                        close : false,
+                        success : function(result) {
+                            vm.entity = result.msg;
+                            vm.entity.roleNameList.forEach(function(role) {
+                                  vm.roleName+=role+",";
+                            });
+                            if(vm.roleName.endsWith(",")){
+                                vm.roleName = vm.roleName.substring(0,vm.roleName.length-1);
+                            }
+                        }
+                     });
+                 }
+            });
+	    },
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 vm.okUtils.ajaxCloud({
+                    url:"/sys/user/save",
+                    param : vm.entity,
+                    json:true,
+                    success : function(result) {
+                        vm.okLayer.msg.greenTick(result.msg)
+                        dialog.load();
+                    }
+                 });
+            }
+          });
+	    },
+	    selectOrg : function(){
+            vm.okUtils.dialogOpen({
+                title: '选择机构',
+                id:'org',
+                url: "sys/user/org.html",
+                scroll : true,
+                width: '300px',
+                height: '500px',
+                success : function(dialog) {
+
+                },
+                yes : function(dialog) {
+                    dialog.vm.acceptClick(vm);
+                }
+            });
+	    },
+	    selectRole:function(){
+	        var that = this;
+	        vm.okUtils.dialogOpen({
+                title: '选择角色',
+                id:'org',
+                url: "sys/user/role.html",
+                scroll : true,
+                width: '60%',
+                height: '80%',
+                success : function(dialog) {
+                    dialog.vm.user.userId = that.entity.userId;
+		        	dialog.vm.user.roleIdList = that.entity.roleIdList;
+		        	dialog.vm.setTargetKeys();
+                },
+                yes : function(dialog) {
+                    dialog.vm.acceptClick(vm);
+                }
+            });
+	    },
+	    setRoleName:function(){
+
+        }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

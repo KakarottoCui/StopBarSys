@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(link)"/>
+<body>
+<div id="app" class="ok-body" v-cloak>
+    <!--模糊搜索区域-->
+    <template>
+        <div style="margin-bottom: 8px;margin-top: 8px;">
+            <i-input placeholder="输入内容"  v-model="user.description"  style="width: 300px"></i-input>
+            <i-button type="primary"  icon="ios-search" @click="load()">搜索</i-button>
+            <i-button type="primary"  icon="ios-redo" @click="reload()" >重置</i-button>
+        </div>
+    </template>
+    <template>
+        <i-table size="small" :columns="tableTitle"  :data="tableData">
+        </i-table>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+layui.use(["okUtils", "okLayer"], function () {
+    var okUtils = layui.okUtils;
+    var okLayer = layui.okLayer;
+    var vm = new Vue({
+        el: '#app',
+        data: function(){
+        var that = this;
+		return {
+            tableTitle : [{
+                title: '序号',
+                minWidth : 100,
+                render: function(h, params) {
+                    return h('span', params.index + (that.user.pageNo- 1) * that.user.pageSize + 1);
+                }
+            },{
+                key : "userName",
+                title : "用户名",
+                minWidth:100
+            },{
+                key : "nickName",
+                title : "昵称",
+                minWidth:100
+            },{
+                key : "lastAccessTime",
+                title : "最后访问时间",
+                sortable: true,
+                minWidth:150
+            }],
+            tableData : [],
+            user : {
+                pageSize : 10,
+                pageNo : 1,
+                description:''
+            },
+          }
+        },
+        methods: {
+            load : function() {
+                var that = this;
+                okUtils.ajaxCloud({
+                    url:"/sys/user/online",
+                    param : that.user,
+                    success : function(result) {
+                         that.tableData = result.msg;
+                    }
+                });
+            },
+            reload : function(){
+                vm.user.pageSize = 10;
+                vm.user.pageNo = 1;
+                vm.user.description = '';
+                this.load();
+            },
+            changePage : function(pageNo) {
+                vm.user.pageNo = pageNo;
+                vm.load();
+            },
+            changePageSize : function(pageSize) {
+                vm.user.pageSize = pageSize;
+                vm.load();
+            }
+        },
+        created: function() {
+            this.load()
+        }
+    })
+  });
+</script>
+</body>
+</html>

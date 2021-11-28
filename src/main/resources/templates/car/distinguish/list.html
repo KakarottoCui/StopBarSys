@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(link)"/>
+<style>
+    .demo-split{
+        height: 350px;
+        border: 1px solid #dcdee2;
+    }
+    .demo-split-pane{
+        padding: 10px;
+        height: 350px;
+    }
+</style>
+<body>
+<div id="app" class="ok-body" v-cloak>
+    <!--模糊搜索区域-->
+    <template>
+        <div style="margin-bottom: 20px;margin-top: 8px;">
+            <i-select placeholder="请选择停车场" v-model="entity.parkManageId" style="width:350px">
+                <i-option   v-for="item in parkManageList" :value="item.id" :key="item.id">{{ item.name }}</i-option>
+            </i-select>
+        </div>
+        <div class="demo-split">
+            <split v-model="split1">
+                <div slot="left" class="demo-split-pane">
+                    <video style="height:320px" id="video"></video>
+                    <canvas id="qr-canvas"></canvas>
+                </div>
+                <div slot="right" class="demo-split-pane">
+                    <img  :src="licensePlate">
+                </div>
+            </split>
+        </div>
+        <div style="margin-top: 18px;text-align:center">
+<!--            <upload action="/car/distinguish/upload">-->
+<!--                <i-button icon="ios-cloud-upload-outline">上传车牌</i-button>-->
+<!--            </upload>-->
+            <Upload
+                    multiple
+                    type="drag"
+                    action="/car/distinguish/upload"
+                    :data="uploadData"
+                    :before-upload="handleUpload"
+                    :on-success="handleSuccess"
+                    :format="['png','jpg','jpeg']"
+                    :max-size="2048">
+                <div style="padding: 20px 0">
+                    <Icon type="ios-cloud-upload" size="52" style="color: #3399ff"></Icon>
+                    <p>点击或将车牌拖拽到这里上传</p>
+                </div>
+            </Upload>
+        </div>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+layui.use(["okUtils", "okLayer"], function () {
+    var okUtils = layui.okUtils;
+    var okLayer = layui.okLayer;
+    var vm = new Vue({
+        el: '#app',
+        data: function(){
+        var that = this;
+		return {
+		    entity:{},
+            parkManageList:[],
+            split1: 0.5,
+            licensePlate:'',
+            uploadData:{}
+          }
+        },
+        methods: {
+            listParkManage : function() {
+                var that = this;
+                okUtils.ajaxCloud({
+                    url:"/car/parkManage/select",
+                    success : function(result) {
+                         that.parkManageList = result.msg;
+                    }
+                });
+            },
+            handleSuccess:function(response, file, fileList){
+                if(response.code==0){
+                    vm.licensePlate = "/"+response.imagePath;
+                    okLayer.msg.greenTick(response.msg);
+                }else{
+                    okLayer.msg.redCross(response.msg);
+                }
+            },
+            handleUpload (file) {
+                if(vm.entity.parkManageId==undefined){
+                    okLayer.msg.redCross("请选择停车场");
+                    return false;
+                }
+                vm.uploadData.id  = vm.entity.parkManageId;
+            }
+        },
+        mounted: function() {
+            this.listParkManage();
+            init();
+        }
+    })
+  });
+</script>
+<script type="text/javascript">
+var canvas,context;
+function init(){
+     var video = document.querySelector('video');
+     canvas = document.getElementById('qr-canvas');
+     context = canvas.getContext('2d');
+     var mediaStreamTrack;
+
+     // 一堆兼容代码
+     window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
+     if (navigator.mediaDevices === undefined) {
+        navigator.mediaDevices = {};
+     }
+     if (navigator.mediaDevices.getUserMedia === undefined) {
+         navigator.mediaDevices.getUserMedia = function(constraints) {
+              var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
+              if (!getUserMedia) {
+                return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+              }
+              return new Promise(function(resolve, reject) {
+                getUserMedia.call(navigator, constraints, resolve, reject);
+              });
+         }
+     }
+     openMedia();
+}
+
+ //摄像头调用配置
+ var mediaOpts = {
+     audio: false,
+     video: true,
+     video: { facingMode: "environment"} // 或者 "user"
+     //video: { width: 50%, height: 350 }
+     // video: { facingMode: { exact: "environment" } }// 或者 "user"
+ }
+
+ // 回调
+ function successFunc(stream) {
+     mediaStreamTrack = stream;
+     video = document.querySelector('video');
+     if ("srcObject" in video) {
+      video.srcObject = stream
+     } else {
+      video.src = window.URL && window.URL.createObjectURL(stream) || stream
+     }
+     video.play();
+ }
+ function errorFunc(err) {
+    alert(err.name);
+ }
+
+ // 正式启动摄像头
+ function openMedia(){
+     navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
+ }
+
+ //关闭摄像头
+ function closeMedia(){
+     mediaStreamTrack.getVideoTracks().forEach(function (track) {
+        track.stop();
+        context.clearRect(0, 0,context.width, context.height);//清除画布
+     });
+ }
+
+ //截取视频
+ function drawMedia(){
+     canvas.setAttribute("width", video.videoWidth);
+     canvas.setAttribute("height", video.videoHeight);
+     context.drawImage(video, 0, 0, video.videoWidth, video.videoHeight);
+ }
+</script>
+</body>
+</html>

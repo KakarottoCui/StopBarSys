@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(link)"/>
+<body>
+<div id="app" class="ok-body" v-cloak>
+    <!--模糊搜索区域-->
+    <template>
+        <div style="margin-bottom: 8px;margin-top: 8px;">
+            <i-input placeholder="输入内容"  v-model="config.description"  style="width: 300px"></i-input>
+            <i-button type="primary"  icon="ios-search" @click="load()">搜索</i-button>
+            <i-button type="primary"  icon="ios-redo" @click="reload()" >重置</i-button>
+            <i-button type="primary" style="float:right;" icon="md-add" @click="add()">新增</i-button>
+        </div>
+    </template>
+    <template>
+        <i-table size="small" :columns="tableTitle"  :data="tableData">
+            <template slot-scope="tableScope" slot="action">
+                <i-button type="primary" size="small" icon="md-create" ghost class="table-btn" @click="edit(tableScope.row)">修改</i-button>
+                <i-button type="primary" size="small" icon="md-trash" ghost class="table-btn" @click="remove(tableScope.row)">删除</i-button>
+            </template>
+        </i-table>
+        <br>
+        <Page  style="float: right;" :current="config.pageNo" :total="tableSize" :page-size="config.pageSize"  @on-change="changePage" @on-page-size-change="changePageSize" show-elevator show-sizer show-total></Page>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+layui.use(["okUtils", "okLayer"], function () {
+    var okUtils = layui.okUtils;
+    var okLayer = layui.okLayer;
+    var vm = new Vue({
+        el: '#app',
+        data: function(){
+        var that = this;
+		return {
+            tableTitle : [{
+                title: '序号',
+                minWidth : 100,
+                render: function(h, params) {
+                    return h('span', params.index + (that.config.pageNo- 1) * that.config.pageSize + 1);
+                }
+            },{
+                key : "key",
+                title : "配置键",
+                minWidth:100
+            },{
+                key : "value",
+                title : "配置值",
+                minWidth:200
+            },{
+                key : "remark",
+                title : "配置备注",
+                minWidth:100
+            },{
+                key : "status",
+                title : "状态",
+                minWidth:50,
+                render: function(h, params) {
+                    var status = params.row.status;
+                    if(status==1){
+                        return h('span','正常' );
+                    }else{
+                        return h('span','禁用' );
+                    }
+                }
+            },{
+                key : "gmtCreate",
+                title : "创建时间",
+                minWidth:150
+            },{
+                title : '操作',
+                key : 'action',
+                minWidth : 150,
+                fixed : 'right',
+                align : 'center',
+                slot:'action'
+            } ],
+            tableData : [],
+            config : {
+                pageSize : 10,
+                pageNo : 1,
+                description:''
+            },
+            tableSize : 50,
+          }
+        },
+        methods: {
+            load : function() {
+                var that = this;
+                okUtils.ajaxCloud({
+                    url:"/sys/config/list",
+                    param : that.config,
+                    success : function(result) {
+                         that.tableData = result.msg.pageData;
+                         that.tableSize = result.msg.totalCount;
+                    }
+                });
+            },
+            reload : function(){
+                vm.config.pageSize = 10;
+                vm.config.pageNo = 1;
+                vm.config.description = '';
+                this.load();
+            },
+            changePage : function(pageNo) {
+                vm.config.pageNo = pageNo;
+                vm.load();
+            },
+            changePageSize : function(pageSize) {
+                vm.config.pageSize = pageSize;
+                vm.load();
+            },
+            edit : function(config) {
+                okUtils.dialogOpen({
+                    title: '修改',
+                    url: "sys/config/form.html",
+                    scroll : true,
+                    width: '40%',
+                    height: '55%',
+                    success : function(dialog) {
+                        dialog.vm.config = JSON.parse(JSON.stringify(config));
+                    },
+                    yes : function(dialog) {
+                        dialog.vm.acceptClick(vm);
+                    }
+                });
+            },
+            add:function(){
+                 okUtils.dialogOpen({
+                    title: '新增',
+                    url: "sys/config/form.html",
+                    scroll : true,
+                    width: '40%',
+                    height: '55%',
+                    yes : function(dialog) {
+                        dialog.vm.acceptClick(vm);
+                    }
+                });
+            },
+            remove:function(config) {
+                 okLayer.confirm("确定要删除吗？", function () {
+                    okUtils.ajaxCloud({
+                        url:"/sys/config/delete",
+                        param : {id: config.id},
+                        success : function(result) {
+                            okLayer.msg.greenTick(result.msg, function () {
+                                  vm.load();
+                            })
+                        }
+                    });
+                 })
+            }
+        },
+        created: function() {
+            this.load()
+        }
+    })
+  });
+</script>
+</body>
+</html>

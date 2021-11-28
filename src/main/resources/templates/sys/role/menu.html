@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(tree)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <div id="treePanel" style="overflow: auto;">
+        <ul id="menuTree" class="ztree"></ul>
+    </div>
+</div>
+<div th:replace="common/foot :: foot(jquery、tree)"></div>
+<script th:inline="none">
+var ztree;
+var setting = {
+    check:{
+        enable:true,
+        nocheckInherit:true
+    },
+    data : {
+        simpleData : {
+            enable : true,
+            idKey : "menuId",
+            pIdKey : "parentId",
+            rootPId : "0"
+        },
+        key : {
+            url : "nourl"
+        }
+    },
+    callback : {
+        onClick : function(event, treeId, treeNode) {
+            vm.parentId = treeNode.menuId;
+            vm.layer = treeNode.type;
+            vm.parentName = treeNode.name;
+            vm.load();
+        }
+    }
+};
+var vm = new Vue({
+    el: '#app',
+    data: {
+        okUtils:null,
+        okLayer:null,
+        okJquery:null,
+        roleId:null,
+        menuIds:null
+    },
+    methods: {
+        load : function() {
+            layui.use(["okUtils", "okLayer"], function () {
+                 vm.okUtils = layui.okUtils;
+                 vm.okLayer = layui.okLayer;
+                 vm.okJquery = layui.jquery;
+                 vm.okUtils.ajaxCloud({
+                    url:"/sys/menu/select",
+                    param : {parentId: null},
+                    close:false,
+                    success : function(result) {
+                        ztree = $.fn.zTree.init($("#menuTree"), setting, result.msg);
+                        ztree.expandAll(true);
+                        vm.getMenu();
+                    }
+                 });
+            });
+        },
+        getMenu : function() {
+            vm.okUtils.ajaxCloud({
+                url:"/sys/role/getMenu",
+                param : {roleId: vm.roleId},
+                close:false,
+                success : function(result) {
+                    vm.menuIds = result.msg;
+                    for(var i=0; i<vm.menuIds.length; i++) {
+                        var node = ztree.getNodeByParam("menuId", vm.menuIds[i]);
+                        ztree.checkNode(node, true, false);
+                    }
+                }
+            });
+        },
+        acceptClick : function(dialog){
+            var role = {};
+            role.roleId = vm.roleId;
+            var nodes = ztree.getCheckedNodes(true);
+            var menuIdList = new Array();
+            for(var i=0; i<nodes.length; i++) {
+                menuIdList.push(nodes[i].menuId);
+            }
+            role.menuIdList = menuIdList;
+            vm.okUtils.ajaxCloud({
+                url:"/sys/role/saveMenu",
+                param : role,
+                json:true,
+                success : function(result) {
+                     vm.okLayer.msg.greenTick(result.msg)
+                }
+            });
+        }
+    },
+    mounted: function() {
+
+    }
+});
+</script>
+</body>
+</html>

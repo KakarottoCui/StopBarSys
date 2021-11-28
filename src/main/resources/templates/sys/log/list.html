@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(link)"/>
+<body>
+<div id="app" class="ok-body" v-cloak>
+    <!--模糊搜索区域-->
+    <template>
+        <div style="margin-bottom: 8px;margin-top: 8px;">
+            <i-input placeholder="输入内容"  v-model="log.description"  style="width: 300px"></i-input>
+            <i-button type="primary"  icon="ios-search" @click="load()">搜索</i-button>
+            <i-button type="primary"  icon="ios-redo" @click="reload()" >重置</i-button>
+        </div>
+    </template>
+    <template>
+        <i-table size="small" :columns="tableTitle"  :data="tableData">
+        </i-table>
+        <br>
+        <Page  style="float: right;" :current="log.pageNo" :total="tableSize" :page-size="log.pageSize"  @on-change="changePage" @on-page-size-change="changePageSize" show-elevator show-sizer show-total></Page>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+layui.use(["okUtils", "okLayer"], function () {
+    var okUtils = layui.okUtils;
+    var okLayer = layui.okLayer;
+    var vm = new Vue({
+        el: '#app',
+        data: function(){
+        var that = this;
+		return {
+            tableTitle : [{
+                title: '序号',
+                minWidth : 100,
+                render: function(h, params) {
+                    return h('span', params.index + (that.log.pageNo- 1) * that.log.pageSize + 1);
+                }
+            },{
+                key : "username",
+                title : "用户名",
+                minWidth:100
+            },{
+                key : "operation",
+                title : "用户操作",
+                minWidth:100
+            },{
+                key : "time",
+                title : "响应时间",
+                minWidth:150
+            },{
+                key : "gmtCreate",
+                title : "操作时间",
+                minWidth:150
+            }],
+            tableData : [],
+            log : {
+                pageSize : 10,
+                pageNo : 1,
+                description:''
+            },
+            tableSize : 0,
+          }
+        },
+        methods: {
+            load : function() {
+                var that = this;
+                okUtils.ajaxCloud({
+                    url:"/sys/log/list",
+                    param : that.log,
+                    success : function(result) {
+                         that.tableData = result.msg.pageData;
+                         that.tableSize = result.msg.totalCount;
+                    }
+                });
+            },
+            reload : function(){
+                vm.log.pageSize = 10;
+                vm.log.pageNo = 1;
+                vm.log.description = '';
+                this.load();
+            },
+            changePage : function(pageNo) {
+                vm.log.pageNo = pageNo;
+                vm.load();
+            },
+            changePageSize : function(pageSize) {
+                vm.log.pageSize = pageSize;
+                vm.load();
+            }
+        },
+        created: function() {
+            this.load()
+        }
+    })
+  });
+</script>
+</body>
+</html>

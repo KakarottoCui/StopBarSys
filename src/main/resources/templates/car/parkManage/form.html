@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="entity" :rules="ruleValidate" :label-width="140">
+            <form-item prop="name" label="停车场名称">
+                <i-input  maxlength="20" v-model="entity.name" placeholder="请输入停车场名称"></i-input>
+            </form-item>
+            <form-item prop="orgName" label="单位名称">
+                <span @click="selectOrg()">
+                    <i-input readonly  v-model="entity.orgName" placeholder="请选择单位"></i-input>
+                </span>
+            </form-item>
+            <form-item prop="parkingSpaceNumber" label="停车位数量">
+                <input-number  v-model="entity.parkingSpaceNumber" placeholder="请输入停车位数量"></input-number>
+            </form-item>
+            <form-item prop="freeTime" label="免费时长(分钟)">
+                <input-number   v-model="entity.freeTime" placeholder="请输入免费时长"></input-number>
+            </form-item>
+            <form-item prop="timeUnit" label="计时单元">
+                <input-number   v-model="entity.timeUnit" placeholder="请输入计时单元"></input-number>
+            </form-item>
+            <form-item prop="unitCost" label="单元费用">
+                <i-input v-model="entity.unitCost" placeholder="请输入计时单元"></i-input>
+            </form-item>
+            <form-item prop="maxMoney" label="最大收费金额">
+                <i-input v-model="entity.maxMoney" placeholder="请输入最大收费金额"></i-input>
+            </form-item>
+            <form-item label="状态">
+                <radio-group  v-model="entity.status">
+                    <radio v-for="item in statusList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        entity:{
+            status:1,
+            orgName:'',
+            orgId:null,
+            parkingSpaceNumber:null,
+            freeTime:null,
+            timeUnit:null,
+            unitCost:null,
+            maxMoney:null
+        },
+        roleName:"",
+        statusList:[{"label":"正常","value":1},{"label":"禁用","value":0}],
+        ruleValidate : {
+			name: [
+				{ required: true, message: '不能为空', trigger: 'blur' }
+			],
+			parkingSpaceNumber: [
+				{ required: true, message: '不能为空', trigger: 'blur',type: 'number'}
+			],
+			freeTime: [
+				{ required: true, message: '不能为空', trigger: 'blur',type: 'number'}
+			],
+			timeUnit: [
+				{ required: true, message: '不能为空', trigger: 'blur',type: 'number'}
+			],
+			unitCost: [
+				{ required: true, message: '不能为空', trigger: 'blur'},
+                { type: 'string', pattern:/^\d+(\.\d{0,2})?$/, message: '必须是数字, 最多保留两位小数', trigger: 'blur'}
+			],
+			maxMoney: [
+				{ required: true, message: '不能为空', trigger: 'blur'},
+                { type: 'string', pattern:/^\d+(\.\d{0,2})?$/, message: '必须是数字, 最多保留两位小数', trigger: 'blur'}
+
+            ],
+			orgName: [
+				{ required: true, message: '请选择机构', trigger: 'change' }
+			]
+		},
+		okUtils:null,
+		okLayer:null
+    },
+    methods: {
+        load : function(){
+            layui.use(["okUtils", "okLayer"], function () {
+                 vm.okUtils = layui.okUtils;
+                 vm.okLayer = layui.okLayer;
+                 if(vm.entity.id!=undefined){
+                     vm.okUtils.ajaxCloud({
+                        url:"/car/parkManage/get",
+                        param : {id:vm.entity.id},
+                        close : false,
+                        success : function(result) {
+                            vm.entity = result.msg;
+                        }
+                     });
+                 }
+            });
+	    },
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 vm.okUtils.ajaxCloud({
+                    url:"/car/parkManage/save",
+                    param : vm.entity,
+                    json:true,
+                    success : function(result) {
+                        vm.okLayer.msg.greenTick(result.msg)
+                        dialog.load();
+                    }
+                 });
+            }
+          });
+	    },
+	    selectOrg : function(){
+            vm.okUtils.dialogOpen({
+                title: '选择机构',
+                id:'org',
+                url: "sys/user/org.html",
+                scroll : true,
+                width: '300px',
+                height: '500px',
+                success : function(dialog) {
+
+                },
+                yes : function(dialog) {
+                    dialog.vm.acceptClick(vm);
+                }
+            });
+	    }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

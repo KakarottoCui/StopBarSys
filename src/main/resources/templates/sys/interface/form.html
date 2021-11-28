@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="entity" :rules="ruleValidate" :label-width="100">
+            <form-item label="类型" prop="type">
+                <i-input placeholder="请输入类型" v-model="entity.type"></i-input>
+            </form-item>
+            <form-item label="描述信息" prop="description">
+                <i-input placeholder="请输入描述信息" v-model="entity.description"></i-input>
+            </form-item>
+            <form-item label="查询语句" prop="query">
+                <i-input type="textarea" :autosize="{minRows: 6,maxRows: 10}" v-model="entity.query"
+                         placeholder="请输入查询语句"></i-input>
+            </form-item>
+            <form-item label="参数" prop="params">
+                <i-input placeholder="请输入参数，多个分号分隔" v-model="entity.params"></i-input>
+            </form-item>
+            <form-item label="状态" prop="status">
+                <radio-group v-model="entity.status">
+                    <radio v-for="item in statusList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        entity:{
+            status:1
+        },
+        statusList:[{"label":"正常","value":1},{"label":"禁用","value":0}],
+        ruleValidate : {
+			type: [
+                {required: true, message: "请输入类型", trigger: 'blur'}
+            ],
+            description: [
+                {required: true, message: "请输入描述信息", trigger: 'blur'}
+            ],
+            query: [
+                {required: true, message: "请输入查询语句", trigger: 'blur'}
+            ]
+		}
+    },
+    methods: {
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 layui.use(["okUtils", "okLayer"], function () {
+                       okUtils = layui.okUtils;
+                       okLayer = layui.okLayer;
+                       okUtils.ajaxCloud({
+                            url:"/sys/interface/save",
+                            param : vm.entity,
+                            json:true,
+                            success : function(result) {
+                                okLayer.msg.greenTick(result.msg)
+                                dialog.load();
+                            }
+                       });
+                });
+            }
+          });
+	    }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

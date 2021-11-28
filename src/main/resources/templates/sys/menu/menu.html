@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" th:href="@{/lib/ztree/css/metroStyle/metroStyle.css}">
+</head>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <div id="treePanel" style="overflow: auto;">
+        <ul id="menuTree" class="ztree"></ul>
+    </div>
+</div>
+<div th:replace="common/foot :: foot(jquery、tree)"></div>
+<script th:inline="none">
+var setting = {
+    data : {
+        simpleData : {
+            enable : true,
+            idKey : "menuId",
+            pIdKey : "parentId",
+            rootPId : "0"
+        },
+        key : {
+            url : "nourl"
+        }
+    },
+    callback : {
+        onClick : function(event, treeId, treeNode) {
+            vm.parentId = treeNode.menuId;
+            vm.parentName = treeNode.name;
+        }
+    }
+};
+var vm = new Vue({
+    el: '#app',
+    data:{
+		okUtils:null,
+		okLayer:null,
+		parentId:null,
+		parentName:null
+    },
+    methods: {
+        tree : function() {
+            vm.okUtils.ajax("/sys/menu/select", "post", {parentId: vm.parentId}, false).done(function (response) {
+                $.fn.zTree.init($("#menuTree"), setting, response.msg);
+            }).fail(function (error) {
+                console.log(error)
+            });
+        },
+        acceptClick : function(dialog){
+            dialog.menu.parentId = vm.parentId;
+            dialog.menu.parentName = vm.parentName;
+            vm.okUtils.dialogClose();
+	    }
+    },
+    created: function() {
+        var _this = this;
+        layui.use(["okUtils", "okLayer"], function () {
+             _this.okUtils = layui.okUtils;
+             _this.okLayer = layui.okLayer;
+             _this.tree();
+        });
+    }
+});
+</script>
+</body>
+</html>

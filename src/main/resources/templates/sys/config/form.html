@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="config" :rules="ruleValidate" :label-width="100">
+            <form-item prop="key" label="配置键">
+                <i-input  maxlength="50" v-model="config.key" placeholder="请输入配置键"></i-input>
+            </form-item>
+            <form-item prop="value" label="配置值">
+                <i-input  maxlength="50" v-model="config.value"  placeholder="请输入配置值"></i-input>
+            </form-item>
+            <form-item prop="remark" label="备注">
+                <i-input maxlength="200" v-model="config.remark"  type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入备注"></i-input>
+            </form-item>
+            <form-item label="状态">
+                <radio-group  v-model="config.status">
+                    <radio v-for="item in statusList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        config:{
+            status:1
+        },
+        statusList:[{"label":"正常","value":1},{"label":"禁用","value":0}],
+        ruleValidate : {
+			key: [
+				{ required: true, message: '配置不能为空', trigger: 'blur' }
+			],
+			value: [
+				{ required: true, message: '配置不能为空', trigger: 'blur' }
+			]
+		}
+    },
+    methods: {
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 layui.use(["okUtils", "okLayer"], function () {
+                       okUtils = layui.okUtils;
+                       okLayer = layui.okLayer;
+                       okUtils.ajaxCloud({
+                            url:"/sys/config/save",
+                            param : vm.config,
+                            json:true,
+                            success : function(result) {
+                                okLayer.msg.greenTick(result.msg)
+                                dialog.load();
+                            }
+                       });
+                });
+            }
+          });
+	    }
+    },
+    created: function() {
+
+    }
+});
+</script>
+</body>
+</html>

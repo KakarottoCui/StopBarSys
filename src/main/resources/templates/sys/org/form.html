@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="common/head :: head(links)"/>
+<body>
+<div class="ok-body" id="app" v-cloak>
+    <template>
+        <i-form label-colon ref="checkForm" :model="org" :rules="ruleValidate" :label-width="120">
+            <form-item prop="code" label="单位代码">
+                <i-input maxlength="20" v-model="org.code" placeholder="请输入单位代码"></i-input>
+            </form-item>
+            <form-item prop="name" label="单位名称">
+                <i-input maxlength="20" v-model="org.name" placeholder="请输入单位名称"></i-input>
+            </form-item>
+            <form-item prop="fullName" label="单位全称">
+                <i-input maxlength="50" v-model="org.fullName"  placeholder="请输入单位全称"></i-input>
+            </form-item>
+            <form-item  v-if="org.parentId!=0" prop="url" label="上级单位">
+                <span @click="selectOrg()">
+                    <i-input readonly maxlength="20" v-model="org.parentName" ></i-input>
+                </span>
+            </form-item>
+            <form-item prop="director" label="单位负责人">
+                <i-input maxlength="20" v-model="org.director"  placeholder="请输入单位负责人"></i-input>
+            </form-item>
+            <form-item label="邮箱">
+                <i-input maxlength="30" v-model="org.email"  placeholder="请输入邮箱"></i-input>
+            </form-item>
+            <form-item label="手机">
+                <i-input maxlength="11" v-model="org.phone"  placeholder="请输入手机"></i-input>
+            </form-item>
+            <form-item label="地址">
+                <i-input maxlength="100" v-model="org.address"  placeholder="请输入地址"></i-input>
+            </form-item>
+            <form-item label="状态">
+                <radio-group  v-model="org.status">
+                    <radio v-for="item in statusList" :label="item.value" :key="item.value">{{item.label}}</radio>
+                </radio-group>
+            </form-item>
+        </i-form>
+    </template>
+</div>
+<div th:replace="common/foot :: foot(script)"></div>
+<script th:inline="none">
+var vm = new Vue({
+    el: '#app',
+    data:{
+        org:{
+            status:1,
+            parentName:'',
+            parentId:null
+        },
+        statusList:[{"label":"正常","value":1},{"label":"禁用","value":0}],
+        ruleValidate : {
+			code: [
+				{ required: true, message: '角色代码不能为空', trigger: 'blur' }
+			],
+			name: [
+				{ required: true, message: '角色名称不能为空', trigger: 'blur' }
+			]
+		},
+		okUtils:null,
+		okLayer:null
+    },
+    methods: {
+        acceptClick : function(dialog){
+          vm.$refs.checkForm.validate(function(valid){
+            if (valid) {
+                 vm.okUtils.ajaxCloud({
+                    url:"/sys/org/save",
+                    param : vm.org,
+                    json:true,
+                    success : function(result) {
+                         vm.okLayer.msg.greenTick(result.msg);
+                         dialog.load();
+                    }
+                });
+            }
+          });
+	    },
+	    selectOrg:function(){
+	        vm.okUtils.dialogOpen({
+	            id:"selectIcon",
+                title: '选择',
+                url: "sys/org/org.html",
+                scroll : true,
+                width: '300px',
+                height: '500px',
+                yes : function(dialog) {
+                    dialog.vm.acceptClick(vm);
+                }
+            });
+	    }
+    },
+    created: function() {
+        var that = this;
+        layui.use(["okUtils", "okLayer"], function () {
+             that.okUtils = layui.okUtils;
+             that.okLayer = layui.okLayer;
+        });
+    }
+});
+</script>
+</body>
+</html>
