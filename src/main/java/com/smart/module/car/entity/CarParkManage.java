@@ -13,8 +13,7 @@ import java.sql.Timestamp;
 
 /**
  * car_park_manage 实体类
- * Created by 小柒2012
- * Sun Oct 27 13:01:25 CST 2021
+
  */
 @Data
 @Entity 
