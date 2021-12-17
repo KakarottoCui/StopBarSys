@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * Shiro权限配置
  * 爪哇笔记：https://blog.52itstyle.vip
- * @author 小柒2012
+
  */
 @Configuration
 public class ShiroConfig {

@@ -6,7 +6,7 @@ import com.smart.module.car.entity.CarParkingRecord;
 
 /**
  * 车辆管理
- * @author 小柒2012
+
  */
 public interface CarParkingRecordService {
 

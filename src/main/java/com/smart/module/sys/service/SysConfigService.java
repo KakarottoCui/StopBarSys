@@ -5,7 +5,7 @@ import com.smart.module.sys.entity.SysConfig;
 
 /**
  * 配置管理
- * @author 小柒2012
+
  */
 public interface SysConfigService {
 

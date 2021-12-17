@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 支付配置
  * 爪哇笔记：https://blog.52itstyle.vip
- * @author 小柒2012
+
  */
 @RestController
 @RequestMapping("/pay/config")

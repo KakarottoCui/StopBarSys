@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 动态查询
- * @author 小柒2012
+
  */
 public interface DynamicQuery {
 	/**

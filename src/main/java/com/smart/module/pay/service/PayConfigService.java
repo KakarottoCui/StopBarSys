@@ -5,7 +5,7 @@ import com.smart.module.pay.entity.AppPayConfig;
 
 /**
  * 支付配置
- * @author 小柒2012
+
  */
 public interface PayConfigService {
 

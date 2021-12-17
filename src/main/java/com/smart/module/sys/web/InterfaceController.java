@@ -25,7 +25,7 @@ import java.util.*;
 /**
  * 接口配置
  * 爪哇笔记：https://blog.52itstyle.vip
- * @author 小柒2012
+
  */
 @Slf4j
 @RestController

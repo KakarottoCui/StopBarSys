@@ -8,7 +8,7 @@ import java.util.Map;
 
 /**
  * 停车场管理
- * @author 小柒2012
+
  */
 public interface ParkManageService {
 

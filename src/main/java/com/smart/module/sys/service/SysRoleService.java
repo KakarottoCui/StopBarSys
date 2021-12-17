@@ -5,7 +5,7 @@ import com.smart.module.sys.entity.SysRole;
 
 /**
  * 角色管理
- * @author 小柒2012
+
  */
 public interface SysRoleService {
 

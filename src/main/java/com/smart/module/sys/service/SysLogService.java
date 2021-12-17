@@ -5,7 +5,7 @@ import com.smart.module.sys.entity.SysLog;
 
 /**
  * 日志管理
- * @author 小柒2012
+
  */
 public interface SysLogService {
 

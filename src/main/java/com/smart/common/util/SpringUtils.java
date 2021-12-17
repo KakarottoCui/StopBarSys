@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 
 /**
  * 工具类
- * @author 小柒2012
+
  */
 @Component
 public final class SpringUtils implements BeanFactoryPostProcessor {

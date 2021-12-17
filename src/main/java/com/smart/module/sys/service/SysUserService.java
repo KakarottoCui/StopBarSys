@@ -7,7 +7,7 @@ import java.util.List;
 
 /**
  * 用户管理
- * @author 小柒2012
+
  */
 public interface SysUserService {
 

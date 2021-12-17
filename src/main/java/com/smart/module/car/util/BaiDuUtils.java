@@ -16,7 +16,7 @@ import java.util.HashMap;
 
 /**
  * 百度智能AI
- * @author 小柒2012
+
  */
 @Component
 @Configuration

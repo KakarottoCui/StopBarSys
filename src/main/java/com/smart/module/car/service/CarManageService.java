@@ -10,7 +10,7 @@ import java.io.IOException;
 
 /**
  * 车辆管理
- * @author 小柒2012
+
  */
 public interface CarManageService {
 

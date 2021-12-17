@@ -5,7 +5,7 @@ import com.smart.module.sys.entity.SysOrg;
 
 /**
  * 机构管理
- * @author 小柒2012
+
  */
 public interface SysOrgService {
 

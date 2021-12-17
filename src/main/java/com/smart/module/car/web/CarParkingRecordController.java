@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 /**
  * 车辆进出记录
  * 爪哇笔记：https://blog.52itstyle.vip
- * @author 小柒2012
+
  */
 @RestController
 @RequestMapping("/car/parkingRecord")

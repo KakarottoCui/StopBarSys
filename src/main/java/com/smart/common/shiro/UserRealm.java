@@ -17,7 +17,7 @@ import java.util.List;
 /**
  * 用户认证
  * 爪哇笔记：https://blog.52itstyle.vip
- * @author 小柒2012
+
  */
 public class UserRealm extends AuthorizingRealm {
 

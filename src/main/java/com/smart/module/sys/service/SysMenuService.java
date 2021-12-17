@@ -6,7 +6,7 @@ import com.smart.module.sys.entity.SysMenu;
 import java.util.List;
 /**
  * 菜单管理
- * @author 小柒2012
+
  */
 public interface SysMenuService {
 

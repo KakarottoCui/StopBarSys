@@ -5,7 +5,7 @@ import com.smart.module.sys.entity.SysInterface;
 
 /**
  * 接口管理
- * @author 小柒2012
+
  */
 public interface SysInterfaceService {
 

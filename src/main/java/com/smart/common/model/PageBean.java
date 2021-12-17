@@ -5,8 +5,8 @@ import java.util.List;
 
 /**
  * 分页模板
- * 爪哇笔记 https://blog.52itstyle.vip
- * @author 小柒2012
+
+
  */
 public class PageBean<T> {
 

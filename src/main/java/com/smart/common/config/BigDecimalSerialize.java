@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 
 /**
  * 金额格式化
- * @author 小柒2012
+
  */
 public class BigDecimalSerialize extends JsonSerializer<BigDecimal> {
 

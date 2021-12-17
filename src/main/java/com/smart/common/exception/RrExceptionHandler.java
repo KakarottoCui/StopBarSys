@@ -11,8 +11,8 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 /**
  * 异常处理器
- * 爪哇笔记 https://blog.52itstyle.vip
- * @author 小柒2012
+
+
  */
 @RestControllerAdvice
 public class RrExceptionHandler {

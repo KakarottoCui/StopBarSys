@@ -9,13 +9,13 @@
 	height: 44px !important;
 	line-height: 44px !important;
 	font-size: 16px !important;
-	background-color: #5FB878 !important;
+	background-color: #1db1f5 !important;
 	font-weight: 550 !important;
 }
 
 .layui-form-checked[lay-skin=primary] i {
-	border-color: #5FB878 !important;
-	background-color: #5FB878 !important;
+	border-color: #2684e8 !important;
+	background-color: #307def !important;
 	color: #fff !important;
 }
 
@@ -37,7 +37,7 @@
 }
 
 .layui-input:focus {
-	box-shadow: 0px 0px 3px 1px #5FB878 !important;
+	box-shadow: 0px 0px 3px 1px #17a5f1 !important;
 }
 
 .logo {
@@ -51,7 +51,7 @@
 	font-size: 30px !important;
 	font-weight: 550 !important;
 	margin-left: 20px !important;
-	color: #5FB878 !important;
+	color: #1d9ff6 !important;
 	display: inline-block !important;
 	height: 60px !important;
 	line-height: 60px !important;
@@ -108,7 +108,7 @@ body {
 }
 
 .pear-btn-success {
-	background-color: #67c23a !important;
+	background-color: #27a2f3 !important;
 }
 .pear-btn-danger,
 .pear-btn-warming,
