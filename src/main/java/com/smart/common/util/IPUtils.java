@@ -9,7 +9,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 /**
  * IP地址
- * 爪哇笔记：https://blog.52itstyle.vip
+
  */
 public class IPUtils {
 

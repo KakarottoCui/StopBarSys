@@ -7,7 +7,7 @@ import org.apache.shiro.subject.Subject;
 
 /**
  * Shiro工具类
- * 爪哇笔记：https://blog.52itstyle.vip
+
  */
 public class ShiroUtils {
 

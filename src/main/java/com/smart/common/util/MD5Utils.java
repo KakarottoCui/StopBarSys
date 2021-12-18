@@ -4,7 +4,7 @@ import org.apache.shiro.crypto.hash.SimpleHash;
 import org.apache.shiro.util.ByteSource;
 /**
  * MD5加密工具
- * 爪哇笔记：https://blog.52itstyle.vip
+
  */
 public class MD5Utils {
 
