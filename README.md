@@ -3,7 +3,6 @@
 
 演示视频链接：https://live.csdn.net/v/301785
 
-
 详询 微信1：egvh56ufy7hh ，微信2：dabocode ，钉钉：chengxuyuandabo ，QQ：821898835 。承接商业项目、课设、毕设和论文，包括但不限于Web、APP、小程序等，课设、毕设提供远程部署和不限次数代码解答！
 
 主要功能：
@@ -29,3 +28,5 @@
 后端：JAVA语言，SpringBoot框架，MySQL数据库，Maven依赖管理等；
 
 前端：layUI框架，HTML页面，Vue语法等技术。
+
+2024年1月上线普通用户安卓APP版本：https://github.com/KakarottoCui/UniSmartParkingAPP
