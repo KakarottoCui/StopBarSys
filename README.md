@@ -30,3 +30,5 @@
 前端：layUI框架，HTML页面，Vue语法等技术。
 
 2024年1月上线普通用户安卓APP版本：https://github.com/KakarottoCui/UniSmartParkingAPP
+
+用户端为小程序、管理员为PC网页的版本：https://github.com/KakarottoCui/UniSpringBootStopBarApplet
